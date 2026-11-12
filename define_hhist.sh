@@ -1,6 +1,4 @@
 
-#!/bin/bash
-
 # define_hhist.sh creates the hhist function to manage bash history.
 # www.gnu.org/software/bash/manual/html_node/Bash-History-Builtins.html
 
@@ -15,13 +13,13 @@ function hhist() {
   echo "in hhist"
   case "$1" in
     set)
-      if ! [ -z "$2" ]; then
-        file=$2
-        HISTFILE=${HIST_DIR}/"$2"
-        set_title [venv:\ $2]
+      if [[ -n "$2" ]]; then
+        histfile=${2}
+        set_title "histfile: $histfile"
+        HISTFILE=${HIST_DIR}/${histfile}
         echo "set HISTFILE=$HISTFILE"
       else
-        echo "give a subdir"
+        echo "give a histfile"
       fi
       return
       ;;
@@ -37,17 +35,25 @@ function hhist() {
       history -r
       ;;
     l)
+      wc ${HISTFILE}
+      ls -l ${HISTFILE}
+      ;;
+    ls)
       echo "..available histories:"
-      ll ${HIST_DIR}
+      ls ${HIST_DIR}
+      ;;
+    ll)
+      echo "..available histories:"
+      ls -l ${HIST_DIR}
       ;;
     cat)
       cat ${HISTFILE}
       ;;
     tail)
-      tail -n 20 ${HISTFILE}
+      tail -n ${HISTFILE}
       ;;
     *)
-      echo "usage: hhist set|get|a|r|l|cat|tail"
+      echo "usage: hhist set|get|a|r|l|ls|ll|cat|tail"
       return
-  esac  
+    esac
 }
